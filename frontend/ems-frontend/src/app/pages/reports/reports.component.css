@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.rep-root {
+  display: flex; min-height: 100vh;
+  background: #f1f5fb; font-family: 'DM Sans', sans-serif;
+}
+.main-area { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+/* ── Topbar ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 32px; background: #fff;
+  border-bottom: 1px solid #e9eef5; position: sticky; top: 0; z-index: 10;
+}
+.page-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
+.page-breadcrumb svg { width: 12px; height: 12px; }
+.breadcrumb-current { color: #3b82f6; font-weight: 500; }
+.page-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: #0f172a; }
+
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+.dl-all-btn {
+  display: flex; align-items: center; gap: 8px;
+  border: none; border-radius: 10px;
+  padding: 10px 18px; font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.dl-all-btn svg { width: 16px; height: 16px; }
+.dl-all-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+.pdf-all-btn { background: #0f172a; color: #fff; }
+.pdf-all-btn:hover:not(:disabled) { background: #1e293b; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(15,23,42,0.3); }
+
+.excel-all-btn { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+.excel-all-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(16,185,129,0.35); }
+
+/* ── Body ── */
+.body-wrap { padding: 28px 32px; display: flex; flex-direction: column; gap: 28px; }
+
+/* ── Section ── */
+.section { display: flex; flex-direction: column; gap: 16px; }
+
+.section-header { display: flex; align-items: center; gap: 14px; }
+
+.section-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.section-icon svg { width: 22px; height: 22px; }
+.pdf-icon   { background: rgba(239,68,68,0.1);   color: #ef4444; }
+.excel-icon { background: rgba(16,185,129,0.1);  color: #10b981; }
+.log-icon   { background: rgba(59,130,246,0.1);  color: #3b82f6; }
+
+.section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 2px; }
+.section-sub { font-size: 13px; color: #94a3b8; }
+
+/* ── Report grid ── */
+.report-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+.report-card {
+  background: #fff; border-radius: 16px; border: 1px solid #e9eef5;
+  padding: 22px; display: flex; flex-direction: column; gap: 12px;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.report-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+.report-card.generating { border-color: #bfdbfe; background: #f8faff; }
+
+.report-card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+
+.report-icon {
+  width: 46px; height: 46px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.report-icon svg { width: 22px; height: 22px; }
+
+.report-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+  padding: 3px 8px; border-radius: 6px;
+}
+.pdf-badge   { background: rgba(239,68,68,0.1);  color: #ef4444; }
+.excel-badge { background: rgba(16,185,129,0.1); color: #059669; }
+
+.report-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: #0f172a; }
+.report-desc  { font-size: 12px; color: #94a3b8; line-height: 1.6; flex: 1; }
+
+/* ── Progress bar ── */
+.report-progress { display: flex; flex-direction: column; gap: 6px; }
+.progress-bar {
+  height: 4px; background: #e2e8f0; border-radius: 100px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background: linear-gradient(90deg, #3b82f6, #2563eb);
+  border-radius: 100px; transition: width 0.3s ease;
+}
+.progress-fill.green { background: linear-gradient(90deg, #10b981, #059669); }
+.progress-label { font-size: 11px; color: #94a3b8; }
+
+/* ── Download buttons ── */
+.dl-btn {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 10px; border: none; border-radius: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; width: 100%;
+}
+.dl-btn svg { width: 15px; height: 15px; }
+.dl-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+.pdf-btn {
+  background: rgba(239,68,68,0.08); color: #dc2626;
+  border: 1.5px solid rgba(239,68,68,0.2);
+}
+.pdf-btn:hover:not(:disabled) { background: #ef4444; color: #fff; border-color: #ef4444; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(239,68,68,0.3); }
+
+.excel-btn {
+  background: rgba(16,185,129,0.08); color: #059669;
+  border: 1.5px solid rgba(16,185,129,0.2);
+}
+.excel-btn:hover:not(:disabled) { background: #10b981; color: #fff; border-color: #10b981; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16,185,129,0.3); }
+
+/* ── Download Log ── */
+.log-list { background: #fff; border-radius: 16px; border: 1px solid #e9eef5; overflow: hidden; }
+
+.log-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px; border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s;
+}
+.log-item:last-child { border-bottom: none; }
+.log-item:hover { background: #f8faff; }
+
+.log-icon-wrap {
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.log-icon-wrap svg { width: 15px; height: 15px; }
+.log-pdf   { background: rgba(239,68,68,0.1);  color: #ef4444; }
+.log-excel { background: rgba(16,185,129,0.1); color: #059669; }
+
+.log-details { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.log-name { font-size: 13px; font-weight: 600; color: #0f172a; }
+.log-time { font-size: 11px; color: #94a3b8; }
+
+.log-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+  padding: 2px 8px; border-radius: 6px;
+}
+.log-badge-pdf   { background: rgba(239,68,68,0.1);  color: #ef4444; }
+.log-badge-excel { background: rgba(16,185,129,0.1); color: #059669; }
+
+/* ── Global toast ── */
+.global-toast {
+  position: fixed; bottom: 28px; right: 28px;
+  display: flex; align-items: center; gap: 10px;
+  background: #0f172a; color: #fff;
+  padding: 13px 20px; border-radius: 12px;
+  font-size: 14px; font-weight: 500;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  z-index: 100; opacity: 0; transform: translateY(16px);
+  pointer-events: none; transition: opacity 0.3s, transform 0.3s;
+}
+.global-toast svg { width: 16px; height: 16px; flex-shrink: 0; color: #10b981; }
+.global-toast.visible { opacity: 1; transform: translateY(0); }
+
+.spinner-sm {
+  width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) { .report-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px)  { .report-grid { grid-template-columns: 1fr; } .body-wrap { padding: 16px; } .topbar { padding: 14px 16px; } }

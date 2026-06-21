@@ -1,0 +1,207 @@
+<div class="dept-root">
+
+  <app-sidebar></app-sidebar>
+
+  <div class="main-area">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="page-breadcrumb">
+          <span>Home</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span class="breadcrumb-current">Departments</span>
+        </div>
+        <h1 class="page-title">Department Management</h1>
+      </div>
+      <button class="add-btn" (click)="openAddDrawer()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Department
+      </button>
+    </header>
+
+    <div class="body-wrap">
+
+      <!-- Stat cards -->
+      <section class="stat-grid">
+        <div class="stat-card" style="--accent:#3b82f6;--accent-bg:rgba(59,130,246,0.08)">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Departments</span>
+            <span class="stat-value">{{ departments.length }}</span>
+          </div>
+        </div>
+        <div class="stat-card" style="--accent:#10b981;--accent-bg:rgba(16,185,129,0.08)">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Employees</span>
+            <span class="stat-value">{{ totalEmployees }}</span>
+          </div>
+        </div>
+        <div class="stat-card" style="--accent:#8b5cf6;--accent-bg:rgba(139,92,246,0.08)">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Avg Employees / Dept</span>
+            <span class="stat-value">{{ avgPerDept }}</span>
+          </div>
+        </div>
+        <div class="stat-card" style="--accent:#f59e0b;--accent-bg:rgba(245,158,11,0.08)">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Search Results</span>
+            <span class="stat-value">{{ filteredDepartments.length }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            class="search-input"
+            type="text"
+            placeholder="Search departments…"
+            [(ngModel)]="searchText"
+            (input)="searchDepartment()"
+          />
+          <button class="search-clear" *ngIf="searchText" (click)="searchText=''; searchDepartment()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="result-count"><strong>{{ filteredDepartments.length }}</strong> of {{ departments.length }} departments</div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" *ngIf="filteredDepartments.length === 0">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <p class="empty-title">No departments found</p>
+        <p class="empty-sub">Try a different search or add a new department</p>
+      </div>
+
+      <!-- Department cards grid -->
+      <div class="dept-grid" *ngIf="filteredDepartments.length > 0">
+        <div class="dept-card" *ngFor="let dep of filteredDepartments; let i = index">
+
+          <div class="dept-card-top">
+            <div class="dept-avatar" [style.background]="getColor(i)">
+              {{ getInitials(dep.name) }}
+            </div>
+            <div class="dept-actions">
+              <button class="action-btn edit-btn" (click)="editDepartment(dep)" title="Edit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button class="action-btn del-btn" (click)="confirmDelete(dep)" title="Delete">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <h3 class="dept-name">{{ dep.name }}</h3>
+          <p class="dept-id">Department ID: #{{ dep.id }}</p>
+
+          <div class="dept-footer">
+            <span class="dept-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              Active
+            </span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─── ADD / EDIT DRAWER ─────────────────────────────── -->
+<div class="drawer-overlay" [class.open]="drawerOpen" (click)="closeDrawer()"></div>
+<div class="drawer" [class.open]="drawerOpen">
+
+  <div class="drawer-header">
+    <div>
+      <h2 class="drawer-title">{{ isEditMode ? 'Edit Department' : 'Add Department' }}</h2>
+      <p class="drawer-sub">{{ isEditMode ? 'Update the department name' : 'Create a new department' }}</p>
+    </div>
+    <button class="drawer-close" (click)="closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="drawer-body">
+    <div class="field-group">
+      <label class="field-label">Department Name <span class="req">*</span></label>
+
+      <!-- Add mode -->
+      <input
+        *ngIf="!isEditMode"
+        class="field-input"
+        placeholder="e.g. Engineering, Marketing, HR…"
+        [(ngModel)]="department.name"
+      />
+
+      <!-- Edit mode -->
+      <input
+        *ngIf="isEditMode && selectedDepartment"
+        class="field-input"
+        placeholder="e.g. Engineering, Marketing, HR…"
+        [(ngModel)]="selectedDepartment.name"
+      />
+
+      <p class="field-hint">Use a clear, descriptive name that reflects the team's function</p>
+    </div>
+
+    <!-- Color preview -->
+    <div class="preview-card" *ngIf="(!isEditMode && department.name) || (isEditMode && selectedDepartment?.name)">
+      <div class="preview-avatar" [style.background]="getColor(previewColorIndex)">
+        {{ getInitials(isEditMode ? selectedDepartment?.name : department.name) }}
+      </div>
+      <div class="preview-info">
+        <span class="preview-name">{{ isEditMode ? selectedDepartment?.name : department.name }}</span>
+        <span class="preview-label">Preview</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-toast" [class.visible]="toastMsg" [class.error]="toastType === 'error'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline *ngIf="toastType === 'success'" points="20 6 9 17 4 12"/>
+      <circle   *ngIf="toastType === 'error'"   cx="12" cy="12" r="10"/>
+    </svg>
+    {{ toastMsg }}
+  </div>
+
+  <div class="drawer-footer">
+    <button class="btn-cancel" (click)="closeDrawer()">Cancel</button>
+    <button class="btn-save" [disabled]="isSaving" (click)="isEditMode ? updateDepartment() : addDepartment()">
+      <span class="spinner-sm" *ngIf="isSaving"></span>
+      {{ isSaving ? 'Saving…' : (isEditMode ? 'Save Changes' : 'Add Department') }}
+    </button>
+  </div>
+
+</div>
+
+<!-- ─── DELETE CONFIRM MODAL ──────────────────────────── -->
+<div class="modal-overlay" [class.open]="deleteModalOpen" (click)="deleteModalOpen = false">
+  <div class="confirm-modal" (click)="$event.stopPropagation()">
+    <div class="confirm-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+    </div>
+    <h3 class="confirm-title">Delete Department?</h3>
+    <p class="confirm-msg">Remove <strong>{{ deptToDelete?.name }}</strong>? This action cannot be undone.</p>
+    <div class="confirm-btns">
+      <button class="btn-cancel" (click)="deleteModalOpen = false">Cancel</button>
+      <button class="btn-danger" (click)="deleteDepartment()">Yes, Delete</button>
+    </div>
+  </div>
+</div>

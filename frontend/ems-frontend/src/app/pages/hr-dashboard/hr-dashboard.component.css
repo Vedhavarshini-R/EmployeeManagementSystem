@@ -1,0 +1,62 @@
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background: #f1f5f9;
+}
+
+.content {
+  flex: 1;
+  padding: 30px;
+}
+
+.header h1 {
+  margin-bottom: 5px;
+}
+
+.header p {
+  color: gray;
+}
+
+.cards {
+  margin-top: 30px;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+
+.card h3 {
+  color: gray;
+}
+
+.card h2 {
+  color: #16a34a;
+}
+
+.menu-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 9999;
+
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #2563eb;
+  color: white;
+
+  font-size: 22px;
+  cursor: pointer;
+}

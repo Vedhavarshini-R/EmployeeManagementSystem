@@ -1,0 +1,201 @@
+<div class="ann-root">
+
+  <app-sidebar></app-sidebar>
+
+  <div class="main-area">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="page-breadcrumb">
+          <span>Home</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span class="breadcrumb-current">Announcements</span>
+        </div>
+        <h1 class="page-title">Announcements</h1>
+      </div>
+      <button class="post-btn" *ngIf="isAdmin" (click)="openDrawer()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Announcement
+      </button>
+    </header>
+
+    <div class="body-wrap">
+
+      <!-- Stat strip -->
+      <section class="stat-strip">
+        <div class="stat-pill" style="--c:#3b82f6">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 17H2a3 3 0 000 6h20v-6z"/><path d="M6 17V7a6 6 0 0112 0v10"/></svg>
+          <span><strong>{{ announcements.length }}</strong> Total</span>
+        </div>
+        <div class="stat-pill" style="--c:#ef4444">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span><strong>{{ urgentCount }}</strong> Urgent</span>
+        </div>
+        <div class="stat-pill" style="--c:#f59e0b">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span><strong>{{ importantCount }}</strong> Important</span>
+        </div>
+        <div class="stat-pill" style="--c:#10b981">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          <span><strong>{{ generalCount }}</strong> General</span>
+        </div>
+      </section>
+
+      <!-- Filter tabs -->
+      <div class="filter-bar">
+        <button class="filter-tab" [class.active]="activeFilter === 'All'"       (click)="setFilter('All')">All</button>
+        <button class="filter-tab" [class.active]="activeFilter === 'Urgent'"    (click)="setFilter('Urgent')">
+          <span class="tab-dot" style="background:#ef4444"></span> Urgent
+        </button>
+        <button class="filter-tab" [class.active]="activeFilter === 'Important'" (click)="setFilter('Important')">
+          <span class="tab-dot" style="background:#f59e0b"></span> Important
+        </button>
+        <button class="filter-tab" [class.active]="activeFilter === 'General'"   (click)="setFilter('General')">
+          <span class="tab-dot" style="background:#10b981"></span> General
+        </button>
+        <div class="filter-count">{{ filteredAnnouncements.length }} posts</div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" *ngIf="filteredAnnouncements.length === 0">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 17H2a3 3 0 000 6h20v-6z"/><path d="M6 17V7a6 6 0 0112 0v10"/></svg>
+        </div>
+        <p class="empty-title">No announcements</p>
+        <p class="empty-sub">Nothing posted in this category yet</p>
+      </div>
+
+      <!-- Cards grid -->
+      <div class="ann-grid" *ngIf="filteredAnnouncements.length > 0">
+
+        <div
+          class="ann-card"
+          *ngFor="let item of filteredAnnouncements"
+          [class]="'ann-card priority-' + (item.priority || 'general').toLowerCase()">
+
+          <div class="card-header">
+            <div class="priority-badge" [class]="'badge-' + (item.priority || 'general').toLowerCase()">
+              <svg *ngIf="item.priority === 'Urgent'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <svg *ngIf="item.priority === 'Important'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <svg *ngIf="!item.priority || item.priority === 'General'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 17H2a3 3 0 000 6h20v-6z"/><path d="M6 17V7a6 6 0 0112 0v10"/></svg>
+              {{ item.priority || 'General' }}
+            </div>
+            <button class="card-delete" *ngIf="isAdmin" (click)="confirmDelete(item)" title="Delete">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+            </button>
+          </div>
+
+          <h3 class="card-title">{{ item.title }}</h3>
+          <p class="card-message">{{ item.message }}</p>
+
+          <div class="card-footer">
+            <div class="card-meta">
+              <div class="meta-avatar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <span class="meta-author">Admin</span>
+            </div>
+            <span class="card-date">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              {{ item.createdDate | date:'dd MMM yyyy, hh:mm a' }}
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─── COMPOSE DRAWER ─────────────────────────────── -->
+<div class="drawer-overlay" [class.open]="drawerOpen" (click)="closeDrawer()"></div>
+<div class="drawer" [class.open]="drawerOpen">
+
+  <div class="drawer-header">
+    <div>
+      <h2 class="drawer-title">New Announcement</h2>
+      <p class="drawer-sub">Broadcast a message to all employees</p>
+    </div>
+    <button class="drawer-close" (click)="closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="drawer-body">
+
+    <div class="field-group">
+      <label class="field-label">Title <span class="req">*</span></label>
+      <input class="field-input" placeholder="e.g. Office Closed on Friday" [(ngModel)]="announcement.title"/>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Priority <span class="req">*</span></label>
+      <div class="priority-selector">
+        <button class="prio-opt general-opt" [class.sel]="announcement.priority === 'General'"   (click)="announcement.priority = 'General'">
+          <div class="prio-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 17H2a3 3 0 000 6h20v-6z"/><path d="M6 17V7a6 6 0 0112 0v10"/></svg>
+          </div>
+          <span class="prio-label">General</span>
+          <div class="prio-check"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.5 2.5L6 10 2.5 6.5 1 8l5 5 9-9z"/></svg></div>
+        </button>
+        <button class="prio-opt important-opt" [class.sel]="announcement.priority === 'Important'" (click)="announcement.priority = 'Important'">
+          <div class="prio-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+          </div>
+          <span class="prio-label">Important</span>
+          <div class="prio-check"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.5 2.5L6 10 2.5 6.5 1 8l5 5 9-9z"/></svg></div>
+        </button>
+        <button class="prio-opt urgent-opt" [class.sel]="announcement.priority === 'Urgent'" (click)="announcement.priority = 'Urgent'">
+          <div class="prio-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <span class="prio-label">Urgent</span>
+          <div class="prio-check"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.5 2.5L6 10 2.5 6.5 1 8l5 5 9-9z"/></svg></div>
+        </button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Message <span class="req">*</span></label>
+      <textarea class="field-textarea" rows="5" placeholder="Write your announcement here…" [(ngModel)]="announcement.message"></textarea>
+      <span class="char-count">{{ announcement.message.length }} characters</span>
+    </div>
+
+  </div>
+
+  <div class="drawer-toast" [class.visible]="toastMsg" [class.error]="toastType === 'error'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline *ngIf="toastType === 'success'" points="20 6 9 17 4 12"/>
+      <circle   *ngIf="toastType === 'error'"   cx="12" cy="12" r="10"/>
+    </svg>
+    {{ toastMsg }}
+  </div>
+
+  <div class="drawer-footer">
+    <button class="btn-cancel" (click)="closeDrawer()">Cancel</button>
+    <button class="btn-post" [disabled]="isSaving" (click)="addAnnouncement()">
+      <span class="spinner-sm" *ngIf="isSaving"></span>
+      <svg *ngIf="!isSaving" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 17H2a3 3 0 000 6h20v-6z"/><path d="M6 17V7a6 6 0 0112 0v10"/></svg>
+      {{ isSaving ? 'Posting…' : 'Post Announcement' }}
+    </button>
+  </div>
+
+</div>
+
+<!-- ─── DELETE CONFIRM MODAL ──────────────────────── -->
+<div class="modal-overlay" [class.open]="deleteModalOpen" (click)="deleteModalOpen = false">
+  <div class="confirm-modal" (click)="$event.stopPropagation()">
+    <div class="confirm-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+    </div>
+    <h3 class="confirm-title">Delete Announcement?</h3>
+    <p class="confirm-msg">Remove <strong>{{ announcementToDelete?.title }}</strong>? This action cannot be undone.</p>
+    <div class="confirm-btns">
+      <button class="btn-cancel" (click)="deleteModalOpen = false">Cancel</button>
+      <button class="btn-danger" (click)="deleteAnnouncement()">Yes, Delete</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,172 @@
+<div class="salary-root">
+
+  <app-sidebar></app-sidebar>
+
+  <div class="main-area">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="page-breadcrumb">
+          <span>Home</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span class="breadcrumb-current">My Salary</span>
+        </div>
+        <h1 class="page-title">Salary Details</h1>
+      </div>
+      <button class="download-btn" (click)="downloadPayslip()" [disabled]="downloading">
+        <span class="spinner-sm" *ngIf="downloading"></span>
+        <svg *ngIf="!downloading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        {{ downloading ? 'Generating…' : 'Download Payslip' }}
+      </button>
+    </header>
+
+    <div class="body-wrap">
+
+      <!-- Salary hero -->
+      <div class="salary-hero">
+        <div class="hero-orb hero-orb-1"></div>
+        <div class="hero-orb hero-orb-2"></div>
+
+        <div class="hero-left">
+          <div class="hero-avatar">{{ getInitials(salaryData.fullName) }}</div>
+          <div class="hero-info">
+            <p class="hero-label">Monthly Salary</p>
+            <h2 class="hero-amount">₹{{ salaryData.salary | number }}</h2>
+            <p class="hero-sub">{{ salaryData.designation }} · {{ salaryData.department }}</p>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="hero-stat">
+            <span class="hero-stat-label">Annual CTC</span>
+            <span class="hero-stat-value">₹{{ (salaryData.salary * 12) | number }}</span>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-stat">
+            <span class="hero-stat-label">Net Monthly</span>
+            <span class="hero-stat-value">₹{{ netSalary | number }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breakdown grid -->
+      <div class="breakdown-grid">
+
+        <!-- Earnings -->
+        <div class="breakdown-card">
+          <div class="breakdown-header">
+            <div class="breakdown-icon earnings-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <h3 class="breakdown-title">Earnings</h3>
+          </div>
+          <div class="breakdown-rows">
+            <div class="breakdown-row">
+              <span class="breakdown-label">Basic Salary</span>
+              <span class="breakdown-val green">₹{{ basicSalary | number }}</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">House Rent Allowance</span>
+              <span class="breakdown-val green">₹{{ hra | number }}</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">Transport Allowance</span>
+              <span class="breakdown-val green">₹{{ transport | number }}</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">Special Allowance</span>
+              <span class="breakdown-val green">₹{{ special | number }}</span>
+            </div>
+          </div>
+          <div class="breakdown-total">
+            <span>Gross Earnings</span>
+            <span class="total-green">₹{{ salaryData.salary | number }}</span>
+          </div>
+        </div>
+
+        <!-- Deductions -->
+        <div class="breakdown-card">
+          <div class="breakdown-header">
+            <div class="breakdown-icon deductions-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+            </div>
+            <h3 class="breakdown-title">Deductions</h3>
+          </div>
+          <div class="breakdown-rows">
+            <div class="breakdown-row">
+              <span class="breakdown-label">Provident Fund (12%)</span>
+              <span class="breakdown-val red">−₹{{ pf | number }}</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">Professional Tax</span>
+              <span class="breakdown-val red">−₹{{ profTax | number }}</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">Income Tax (TDS)</span>
+              <span class="breakdown-val red">−₹{{ tds | number }}</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">ESI (0.75%)</span>
+              <span class="breakdown-val red">−₹{{ esi | number }}</span>
+            </div>
+          </div>
+          <div class="breakdown-total">
+            <span>Total Deductions</span>
+            <span class="total-red">−₹{{ totalDeductions | number }}</span>
+          </div>
+        </div>
+
+        <!-- Net pay summary -->
+        <div class="breakdown-card net-card">
+          <div class="breakdown-header">
+            <div class="breakdown-icon net-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <h3 class="breakdown-title">Net Pay Summary</h3>
+          </div>
+          <div class="net-display">
+            <p class="net-label">Take Home Salary</p>
+            <p class="net-amount">₹{{ netSalary | number }}</p>
+            <p class="net-sub">After all deductions</p>
+          </div>
+          <div class="net-bar-wrap">
+            <div class="net-bar-row">
+              <span class="net-bar-label">Earnings</span>
+              <div class="net-bar-track">
+                <div class="net-bar-fill earnings-fill" style="width:100%"></div>
+              </div>
+              <span class="net-bar-amt">₹{{ salaryData.salary | number }}</span>
+            </div>
+            <div class="net-bar-row">
+              <span class="net-bar-label">Deductions</span>
+              <div class="net-bar-track">
+                <div class="net-bar-fill deductions-fill" [style.width]="deductionPercent + '%'"></div>
+              </div>
+              <span class="net-bar-amt red">−₹{{ totalDeductions | number }}</span>
+            </div>
+            <div class="net-bar-row">
+              <span class="net-bar-label">Net Pay</span>
+              <div class="net-bar-track">
+                <div class="net-bar-fill net-fill" [style.width]="netPercent + '%'"></div>
+              </div>
+              <span class="net-bar-amt green-bold">₹{{ netSalary | number }}</span>
+            </div>
+          </div>
+          <div class="pay-period">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Pay period: {{ currentMonth }}
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="global-toast" [class.visible]="toastMsg">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  {{ toastMsg }}
+</div>

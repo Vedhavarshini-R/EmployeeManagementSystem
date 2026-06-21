@@ -1,0 +1,184 @@
+<div class="profile-root">
+
+  <app-sidebar></app-sidebar>
+
+  <div class="main-area">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="page-breadcrumb">
+          <span>Home</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span class="breadcrumb-current">My Profile</span>
+        </div>
+        <h1 class="page-title">My Profile</h1>
+      </div>
+    </header>
+
+    <div class="body-wrap">
+
+      <!-- Profile hero card -->
+      <div class="hero-card">
+
+        <!-- Cover banner -->
+        <div class="cover-banner">
+          <div class="cover-orb cover-orb-1"></div>
+          <div class="cover-orb cover-orb-2"></div>
+        </div>
+
+        <!-- Avatar + upload -->
+        <div class="avatar-section">
+          <div class="avatar-wrap">
+            <img
+              *ngIf="imageUrl"
+              [src]="imageUrl"
+              alt="Profile"
+              class="avatar-img"
+            />
+            <div class="avatar-initials" *ngIf="!imageUrl">
+              {{ getInitials(employee.fullName) }}
+            </div>
+
+            <!-- Upload overlay -->
+            <label class="avatar-overlay" for="photo-input" title="Change photo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </label>
+            <input
+              id="photo-input"
+              type="file"
+              accept="image/*"
+              class="photo-input-hidden"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+
+          <div class="hero-info">
+            <h2 class="hero-name">{{ employee.fullName || '—' }}</h2>
+            <p class="hero-designation">{{ employee.designation || 'Employee' }}</p>
+            <div class="hero-badges">
+              <span class="hero-badge dept-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                {{ employee.department || 'N/A' }}
+              </span>
+              <span class="hero-badge active-badge">
+                <span class="active-dot"></span> Active
+              </span>
+            </div>
+          </div>
+
+          <!-- Upload button -->
+          <div class="upload-section">
+            <div class="upload-preview" *ngIf="selectedFile">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              {{ selectedFile.name }}
+            </div>
+            <button
+              class="upload-btn"
+              *ngIf="selectedFile"
+              [disabled]="uploading"
+              (click)="uploadPhoto()">
+              <span class="spinner-sm" *ngIf="uploading"></span>
+              <svg *ngIf="!uploading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              {{ uploading ? 'Uploading…' : 'Upload Photo' }}
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Info grid -->
+      <div class="info-grid">
+
+        <!-- Personal info -->
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="info-card-icon" style="background:rgba(59,130,246,0.1);color:#3b82f6">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <h3 class="info-card-title">Personal Information</h3>
+          </div>
+          <div class="info-rows">
+            <div class="info-row">
+              <span class="info-key">Full Name</span>
+              <span class="info-val">{{ employee.fullName || '—' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Username</span>
+              <span class="info-val mono">{{ employee.username || '—' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Email</span>
+              <span class="info-val">{{ employee.email || '—' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Phone</span>
+              <span class="info-val">{{ employee.phone || '—' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Work info -->
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="info-card-icon" style="background:rgba(16,185,129,0.1);color:#10b981">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            </div>
+            <h3 class="info-card-title">Work Information</h3>
+          </div>
+          <div class="info-rows">
+            <div class="info-row">
+              <span class="info-key">Department</span>
+              <span class="info-val">{{ employee.department || '—' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Designation</span>
+              <span class="info-val">{{ employee.designation || '—' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Employee ID</span>
+              <span class="info-val mono">#EMP{{ employee.id | number:'4.0-0' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Status</span>
+              <span class="info-val">
+                <span class="status-chip">
+                  <span class="active-dot"></span> Active
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Salary info -->
+        <div class="info-card salary-card">
+          <div class="info-card-header">
+            <div class="info-card-icon" style="background:rgba(139,92,246,0.1);color:#8b5cf6">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <h3 class="info-card-title">Salary Details</h3>
+          </div>
+          <div class="salary-display">
+            <span class="salary-label">Monthly Salary</span>
+            <span class="salary-value">₹{{ employee.salary | number }}</span>
+          </div>
+          <div class="salary-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Contact HR for salary revision requests
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="global-toast" [class.visible]="toastMsg" [class.error]="toastType === 'error'">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <polyline *ngIf="toastType === 'success'" points="20 6 9 17 4 12"/>
+    <circle   *ngIf="toastType === 'error'"   cx="12" cy="12" r="10"/>
+  </svg>
+  {{ toastMsg }}
+</div>

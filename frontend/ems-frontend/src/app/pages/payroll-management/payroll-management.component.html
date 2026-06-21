@@ -1,0 +1,196 @@
+<div class="pay-root">
+
+  <app-sidebar></app-sidebar>
+
+  <div class="main-area">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="page-breadcrumb">
+          <span>Home</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span class="breadcrumb-current">Payroll</span>
+        </div>
+        <h1 class="page-title">Payroll Management</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          {{ today }}
+        </div>
+      </div>
+    </header>
+
+    <div class="body-wrap">
+
+      <!-- Stat cards -->
+      <section class="stat-grid">
+        <div class="stat-card" style="--accent:#3b82f6;--accent-bg:rgba(59,130,246,0.08)">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Employees</span>
+            <span class="stat-value">{{ employees.length }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--accent:#10b981;--accent-bg:rgba(16,185,129,0.08)">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Monthly Payroll</span>
+            <span class="stat-value">₹{{ totalPayroll | number }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--accent:#8b5cf6;--accent-bg:rgba(139,92,246,0.08)">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Average Salary</span>
+            <span class="stat-value">₹{{ avgSalary | number }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--accent:#f59e0b;--accent-bg:rgba(245,158,11,0.08)">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Departments</span>
+            <span class="stat-value">{{ departmentCount }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            class="search-input"
+            type="text"
+            placeholder="Search by name or designation…"
+            [(ngModel)]="searchText"
+            (input)="applyFilters()"
+          />
+          <button class="search-clear" *ngIf="searchText" (click)="searchText=''; applyFilters()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <select class="filter-select" [(ngModel)]="filterDept" (change)="applyFilters()">
+          <option value="">All Departments</option>
+          <option *ngFor="let d of departments" [value]="d">{{ d }}</option>
+        </select>
+
+        <div class="result-count"><strong>{{ filteredEmployees.length }}</strong> of {{ employees.length }} employees</div>
+      </div>
+
+      <!-- Payroll Table -->
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Department</th>
+              <th>Designation</th>
+              <th class="right">Current Salary</th>
+              <th class="right">New Salary (₹)</th>
+              <th class="center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr *ngIf="filteredEmployees.length === 0">
+              <td colspan="6">
+                <div class="empty-state">
+                  <div class="empty-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                  </div>
+                  <p class="empty-title">No employees found</p>
+                  <p class="empty-sub">Try adjusting your search or filter</p>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngFor="let emp of filteredEmployees; let i = index"
+                class="pay-row"
+                [class.updated]="updatedIds.has(emp.id)">
+              <td>
+                <div class="emp-cell">
+                  <div class="avatar" [style.background]="getAvatarColor(i)">
+                    {{ getInitials(emp.fullName) }}
+                  </div>
+                  <div class="emp-details">
+                    <span class="emp-name">{{ emp.fullName }}</span>
+                    <span class="emp-id">#EMP{{ emp.id | number:'4.0-0' }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="dept-badge">{{ emp.department }}</span>
+              </td>
+              <td class="desig-text">{{ emp.designation }}</td>
+              <td class="right">
+                <span class="salary-current">₹{{ emp.originalSalary | number }}</span>
+              </td>
+              <td class="right">
+                <div class="salary-input-wrap" [class.dirty]="emp.salary !== emp.originalSalary">
+                  <span class="currency-prefix">₹</span>
+                  <input
+                    class="salary-input"
+                    type="number"
+                    [(ngModel)]="emp.salary"
+                    min="0"
+                  />
+                  <span class="change-indicator" *ngIf="emp.salary !== emp.originalSalary">
+                    <svg *ngIf="emp.salary > emp.originalSalary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:#10b981"><polyline points="18 15 12 9 6 15"/></svg>
+                    <svg *ngIf="emp.salary < emp.originalSalary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:#ef4444"><polyline points="6 9 12 15 18 9"/></svg>
+                  </span>
+                </div>
+              </td>
+              <td class="center">
+                <div class="action-wrap">
+                  <button
+                    class="save-btn"
+                    [class.saved]="updatedIds.has(emp.id)"
+                    [disabled]="savingId === emp.id || emp.salary === emp.originalSalary"
+                    (click)="updateSalary(emp)">
+                    <span class="spinner-sm" *ngIf="savingId === emp.id"></span>
+                    <svg *ngIf="updatedIds.has(emp.id) && savingId !== emp.id" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span *ngIf="savingId !== emp.id && !updatedIds.has(emp.id)">Update</span>
+                    <span *ngIf="savingId === emp.id">Saving…</span>
+                    <span *ngIf="updatedIds.has(emp.id) && savingId !== emp.id">Saved</span>
+                  </button>
+                  <button
+                    class="reset-btn"
+                    *ngIf="emp.salary !== emp.originalSalary"
+                    (click)="resetSalary(emp)"
+                    title="Reset">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Global toast -->
+<div class="global-toast" [class.visible]="toastMsg" [class.error]="toastType === 'error'">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <polyline *ngIf="toastType === 'success'" points="20 6 9 17 4 12"/>
+    <circle   *ngIf="toastType === 'error'"   cx="12" cy="12" r="10"/>
+  </svg>
+  {{ toastMsg }}
+</div>

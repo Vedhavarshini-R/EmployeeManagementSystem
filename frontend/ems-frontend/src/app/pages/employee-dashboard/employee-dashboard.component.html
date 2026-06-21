@@ -1,0 +1,281 @@
+<div class="emp-dash-root">
+
+  <app-sidebar></app-sidebar>
+
+  <div class="main-area">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="page-breadcrumb">
+          <span>Home</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span class="breadcrumb-current">Dashboard</span>
+        </div>
+        <h1 class="page-title">Employee Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          {{ today }}
+        </div>
+      </div>
+    </header>
+
+    <div class="body-wrap">
+
+      <!-- Welcome banner -->
+      <div class="welcome-banner">
+        <div class="welcome-orb orb-1"></div>
+        <div class="welcome-orb orb-2"></div>
+        <div class="welcome-content">
+          <div class="welcome-avatar">{{ getInitials(employeeName) }}</div>
+          <div class="welcome-text">
+            <p class="welcome-greeting">{{ greeting }},</p>
+            <h2 class="welcome-name">{{ employeeName }} 👋</h2>
+            <p class="welcome-sub">Here's a snapshot of your workspace today</p>
+          </div>
+        </div>
+        <div class="welcome-badge-wrap">
+          <span class="welcome-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            Employee
+          </span>
+        </div>
+
+        <div style="margin-top:20px;">
+
+  <button
+    *ngIf="!isLoggedIn"
+    (click)="login()"
+    style="
+      background:#10b981;
+      color:white;
+      border:none;
+      padding:12px 25px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+    ">
+    Login
+  </button>
+  <p *ngIf="loginTime">
+  <strong>Login Time:</strong>
+  {{ loginTime }}
+</p>
+<p *ngIf="logOffTime">
+  <strong>Log Off Time:</strong>
+  {{ logOffTime }}
+</p>
+
+<p *ngIf="workingHours > 0">
+  <strong>Working Hours:</strong>
+  {{ workingHours | number:'1.1-2' }}
+</p>
+
+  <button
+  *ngIf="isLoggedIn"
+  (click)="logoff()"
+  style="
+    background:#ef4444;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+  ">
+  Log Off
+</button>
+
+</div>
+      </div>
+
+      <!-- Quick-access cards -->
+      <section class="quick-grid">
+
+        <a class="quick-card" routerLink="/profile" style="--accent:#3b82f6;--accent-bg:rgba(59,130,246,0.08)">
+          <div class="quick-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="quick-info">
+            <span class="quick-label">My Profile</span>
+            <span class="quick-desc">View &amp; update personal info</span>
+          </div>
+          <div class="quick-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </a>
+
+        <a class="quick-card" routerLink="/attendance-management" style="--accent:#10b981;--accent-bg:rgba(16,185,129,0.08)">
+          <div class="quick-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg>
+          </div>
+          <div class="quick-info">
+            <span class="quick-label">My Attendance</span>
+            <span class="quick-desc">Check daily records</span>
+          </div>
+          <div class="quick-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </a>
+
+        <a class="quick-card" routerLink="/leave-management" style="--accent:#f59e0b;--accent-bg:rgba(245,158,11,0.08)">
+          <div class="quick-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
+          </div>
+          <div class="quick-info">
+            <span class="quick-label">Leave Requests</span>
+            <span class="quick-desc">Apply &amp; track leaves</span>
+          </div>
+          <div class="quick-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </a>
+
+        <a class="quick-card" routerLink="/my-salary" style="--accent:#8b5cf6;--accent-bg:rgba(139,92,246,0.08)">
+          <div class="quick-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <div class="quick-info">
+            <span class="quick-label">Salary Details</span>
+            <span class="quick-desc">View payroll info</span>
+          </div>
+          <div class="quick-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </a>
+
+      </section>
+
+      <!-- Stats row -->
+      <section class="stats-row">
+
+        <!-- Attendance summary -->
+        <div class="stat-widget">
+          <div class="widget-header">
+            <h3 class="widget-title">Attendance This Month</h3>
+            <span class="widget-badge green">{{ attendanceRate }}% rate</span>
+          </div>
+          <div class="attendance-bars">
+            <div class="att-bar-item">
+              <span class="att-bar-label">Present</span>
+              <div class="att-bar-track">
+                <div class="att-bar-fill present" [style.width]="presentPercent + '%'"></div>
+              </div>
+              <span class="att-bar-count">{{ presentDays }}</span>
+            </div>
+            <div class="att-bar-item">
+              <span class="att-bar-label">Absent</span>
+              <div class="att-bar-track">
+                <div class="att-bar-fill absent" [style.width]="absentPercent + '%'"></div>
+              </div>
+              <span class="att-bar-count">{{ absentDays }}</span>
+            </div>
+          </div>
+          <div class="att-footer">
+            <span>{{ presentDays + absentDays }} total working days tracked</span>
+            <a routerLink="/attendance-management" class="view-link">View all →</a>
+          </div>
+        </div>
+
+        <!-- Leave summary -->
+        <div class="stat-widget">
+          <div class="widget-header">
+            <h3 class="widget-title">Leave Summary</h3>
+            <a routerLink="/leave-management" class="widget-badge blue">Apply →</a>
+          </div>
+          <div class="leave-types">
+            <div class="leave-type-row">
+              <div class="leave-type-dot" style="background:#06b6d4"></div>
+              <span class="leave-type-name">Casual Leave</span>
+              <div class="leave-type-bar">
+                <div class="leave-type-fill" style="width:60%;background:#06b6d4"></div>
+              </div>
+              <span class="leave-type-count">{{ casualLeaves }} used</span>
+            </div>
+            <div class="leave-type-row">
+              <div class="leave-type-dot" style="background:#ef4444"></div>
+              <span class="leave-type-name">Sick Leave</span>
+              <div class="leave-type-bar">
+                <div class="leave-type-fill" style="width:30%;background:#ef4444"></div>
+              </div>
+              <span class="leave-type-count">{{ sickLeaves }} used</span>
+            </div>
+            <div class="leave-type-row">
+              <div class="leave-type-dot" style="background:#8b5cf6"></div>
+              <span class="leave-type-name">Earned Leave</span>
+              <div class="leave-type-bar">
+                <div class="leave-type-fill" style="width:20%;background:#8b5cf6"></div>
+              </div>
+              <span class="leave-type-count">{{ earnedLeaves }} used</span>
+            </div>
+          </div>
+          <div class="leave-pending" *ngIf="pendingLeaves > 0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            {{ pendingLeaves }} request(s) pending approval
+          </div>
+        </div>
+
+        <!-- Change password shortcut -->
+        <div class="stat-widget shortcut-widget">
+          <div class="widget-header">
+            <h3 class="widget-title">Account</h3>
+          </div>
+          <div class="shortcut-list">
+            <a routerLink="/change-password" class="shortcut-item">
+              <div class="shortcut-icon" style="background:rgba(59,130,246,0.1);color:#3b82f6">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              </div>
+              <span>Change Password</span>
+              <svg class="shortcut-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+            <a routerLink="/profile" class="shortcut-item">
+              <div class="shortcut-icon" style="background:rgba(16,185,129,0.1);color:#10b981">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <span>Edit Profile</span>
+              <svg class="shortcut-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+            <a routerLink="/announcements" class="shortcut-item">
+              <div class="shortcut-icon" style="background:rgba(139,92,246,0.1);color:#8b5cf6">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 17H2a3 3 0 000 6h20v-6z"/><path d="M6 17V7a6 6 0 0112 0v10"/></svg>
+              </div>
+              <span>Announcements</span>
+              <svg class="shortcut-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Latest Announcements -->
+      <section class="announcements-section">
+        <div class="section-header">
+          <h2 class="section-title">Latest Announcements</h2>
+          <a routerLink="/announcements" class="view-all-link">View all →</a>
+        </div>
+
+        <div class="ann-empty" *ngIf="announcements.length === 0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 17H2a3 3 0 000 6h20v-6z"/><path d="M6 17V7a6 6 0 0112 0v10"/></svg>
+          <span>No announcements yet</span>
+        </div>
+
+        <div class="ann-grid" *ngIf="announcements.length > 0">
+          <div class="ann-card" *ngFor="let item of announcements"
+               [class]="'ann-card priority-' + (item.priority || 'general').toLowerCase()">
+            <div class="ann-card-header">
+              <span class="ann-priority-badge" [class]="'badge-' + (item.priority || 'general').toLowerCase()">
+                {{ item.priority || 'General' }}
+              </span>
+              <span class="ann-date">{{ item.createdDate | date:'dd MMM yyyy' }}</span>
+            </div>
+            <h4 class="ann-title">{{ item.title }}</h4>
+            <p class="ann-message">{{ item.message }}</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
